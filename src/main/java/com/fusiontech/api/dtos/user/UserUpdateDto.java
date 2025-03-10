@@ -16,6 +16,6 @@ public class UserUpdateDto {
     private LocalDate birthdate;
     private String email;
     private Gender gender;
-    private String image;
+    private String imageUrl;
     private String password;
 }

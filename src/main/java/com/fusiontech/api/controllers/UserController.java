@@ -25,7 +25,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/by-email")
     public ResponseEntity<ApiResponse> getUserByEmail(@RequestParam String email) {
         ApiResponse response = userService.getUserByEmail(email);
         return ResponseEntity.ok(response);

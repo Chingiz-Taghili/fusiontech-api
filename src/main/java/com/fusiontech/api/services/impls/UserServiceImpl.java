@@ -17,7 +17,6 @@ import com.fusiontech.api.payloads.Paged;
 import com.fusiontech.api.repositories.RoleRepository;
 import com.fusiontech.api.repositories.UserRepository;
 import com.fusiontech.api.services.UserService;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -112,7 +111,7 @@ public class UserServiceImpl implements UserService {
         String password = encoder.encode(createDto.getPassword());
         newUser.setPassword(password);
 
-        if (createDto.getImage() == null || createDto.getImage().isEmpty()) {
+        if (createDto.getImageUrl() == null || createDto.getImageUrl().isEmpty()) {
             newUser.setImage("/default-profile-picture.svg");
         }
         if (createDto.getRoles() == null || createDto.getRoles().isEmpty()) {
@@ -174,8 +173,8 @@ public class UserServiceImpl implements UserService {
         findUser.setBirthdate(updateDto.getBirthdate());
         findUser.setEmail(updateDto.getEmail());
         findUser.setGender(updateDto.getGender());
-        if (updateDto.getImage() != null && !updateDto.getImage().isEmpty()) {
-            findUser.setImage(updateDto.getImage());
+        if (updateDto.getImageUrl() != null && !updateDto.getImageUrl().isEmpty()) {
+            findUser.setImage(updateDto.getImageUrl());
         } else {
             findUser.setImage("/default-profile-picture.svg");
         }

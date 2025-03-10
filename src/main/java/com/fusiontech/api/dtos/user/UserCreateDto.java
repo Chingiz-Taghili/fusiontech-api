@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -17,7 +16,7 @@ public class UserCreateDto {
     private String name;
     private String surname;
     private LocalDate birthdate;
-    private String image;
+    private String imageUrl;
     private Gender gender;
     private String email;
     private String password;
