@@ -24,7 +24,7 @@ public class UserEntity implements UserDetails {
     private String name;
     private String surname;
     private LocalDate birthdate;
-    private String image;
+    private String imageUrl;
     @Column(name = "email", nullable = false)
     private String email;
     private String password;

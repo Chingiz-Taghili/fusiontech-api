@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(password);
 
         if (createDto.getImageUrl() == null || createDto.getImageUrl().isEmpty()) {
-            newUser.setImage("/default-profile-picture.svg");
+            newUser.setImageUrl("/default-profile-picture.svg");
         }
         if (createDto.getRoles() == null || createDto.getRoles().isEmpty()) {
             Role role = roleRepository.findByName("ROLE_USER").orElseGet(() ->
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(password);
 
         if (registerDto.getImage() == null || registerDto.getImage().isEmpty()) {
-            newUser.setImage("/default-profile-picture.svg");
+            newUser.setImageUrl("/default-profile-picture.svg");
         }
 
         Role role = roleRepository.findByName("ROLE_USER").orElseGet(() ->
@@ -174,9 +174,9 @@ public class UserServiceImpl implements UserService {
         findUser.setEmail(updateDto.getEmail());
         findUser.setGender(updateDto.getGender());
         if (updateDto.getImageUrl() != null && !updateDto.getImageUrl().isEmpty()) {
-            findUser.setImage(updateDto.getImageUrl());
+            findUser.setImageUrl(updateDto.getImageUrl());
         } else {
-            findUser.setImage("/default-profile-picture.svg");
+            findUser.setImageUrl("/default-profile-picture.svg");
         }
         if (updateDto.getPassword() != null && !updateDto.getPassword().isEmpty()) {
             String password = encoder.encode(updateDto.getPassword());

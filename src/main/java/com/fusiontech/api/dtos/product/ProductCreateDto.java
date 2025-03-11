@@ -20,7 +20,7 @@ public class ProductCreateDto {
     private boolean featured;
     private boolean offered;
     private List<String> imageUrls;
-    private Long brand;
-    private Long category;
-    private Long subcategory;
+    private Long brandId;
+    private Long categoryId;
+    private Long subcategoryId;
 }
