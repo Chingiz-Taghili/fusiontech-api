@@ -16,5 +16,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<UserEntity> findByKeywordInColumnsIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
 
+    boolean existsByEmail(String email);
+
     Optional<UserEntity> findByEmail(String email);
 }

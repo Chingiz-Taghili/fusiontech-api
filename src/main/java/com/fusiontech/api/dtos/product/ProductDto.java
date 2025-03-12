@@ -25,7 +25,7 @@ public class ProductDto {
     private boolean offered;
     private double rating;
     private List<Image> images;
-    private String image;
+    private String imageUrl;
     private List<Review> reviews;
     private Brand brand;
     private Category category;

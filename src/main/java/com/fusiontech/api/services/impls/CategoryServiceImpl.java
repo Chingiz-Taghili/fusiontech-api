@@ -67,8 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public ApiResponse createCategory(CategoryCreateDto createDto) {
-        Optional<Category> optionalCategory = categoryRepository.findByName(createDto.getName());
-        if (optionalCategory.isPresent()) {
+        if (categoryRepository.existsByName(createDto.getName())) {
             throw new ResourceAlreadyExistsException("Category", "name", createDto.getName());
         }
         Category category = modelMapper.map(createDto, Category.class);
@@ -91,8 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ApiResponse updateCategory(Long id, CategoryUpdateDto updateDto) {
         Category findCategory = categoryRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "id", id));
-        Optional<Category> sameCategory = categoryRepository.findByName(updateDto.getName());
-        if (sameCategory.isPresent() && !sameCategory.get().getId().equals(id)) {
+        if (categoryRepository.existsByName(updateDto.getName()) && !findCategory.getName().equals(updateDto.getName())) {
             throw new ResourceAlreadyExistsException("Category", "name", updateDto.getName());
         }
         findCategory.setName(updateDto.getName());

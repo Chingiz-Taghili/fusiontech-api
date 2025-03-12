@@ -103,8 +103,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ApiResponse createUser(UserCreateDto createDto) {
-        Optional<UserEntity> optionalUser = userRepository.findByEmail(createDto.getEmail());
-        if (optionalUser.isPresent()) {
+        if (userRepository.existsByEmail(createDto.getEmail())) {
             throw new ResourceAlreadyExistsException("User", "email", createDto.getEmail());
         }
         UserEntity newUser = modelMapper.map(createDto, UserEntity.class);
@@ -131,8 +130,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ApiResponse registerUser(UserRegisterDto registerDto) {
-        Optional<UserEntity> optionalUser = userRepository.findByEmail(registerDto.getEmail());
-        if (optionalUser.isPresent()) {
+        if (userRepository.existsByEmail(registerDto.getEmail())) {
             throw new ResourceAlreadyExistsException("User", "email", registerDto.getEmail());
         }
         UserEntity newUser = modelMapper.map(registerDto, UserEntity.class);
@@ -164,8 +162,7 @@ public class UserServiceImpl implements UserService {
     public ApiResponse updateUser(Long id, UserUpdateDto updateDto) {
         UserEntity findUser = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id));
-        Optional<UserEntity> sameUser = userRepository.findByEmail(updateDto.getEmail());
-        if (sameUser.isPresent() && !sameUser.get().getId().equals(id)) {
+        if (userRepository.existsByEmail(updateDto.getEmail()) && !findUser.getEmail().equals(updateDto.getEmail())) {
             throw new ResourceAlreadyExistsException("User", "email", updateDto.getEmail());
         }
         findUser.setName(updateDto.getName());
@@ -246,7 +243,7 @@ public class UserServiceImpl implements UserService {
         List<ProductDto> favoriteProducts = findProducts.subList(start, end).stream().map(product -> {
             ProductDto dto = modelMapper.map(product, ProductDto.class);
             List<Image> images = product.getImages();
-            dto.setImage(!images.isEmpty() ? images.get(0).getUrl() : null);
+            dto.setImageUrl(!images.isEmpty() ? images.get(0).getUrl() : null);
             return dto;
         }).toList();
 

@@ -1,22 +1,29 @@
 package com.fusiontech.api.services.impls;
 
 import com.fusiontech.api.dtos.product.ProductCreateDto;
+import com.fusiontech.api.dtos.product.ProductDto;
 import com.fusiontech.api.dtos.product.ProductUpdateDto;
 import com.fusiontech.api.exceptions.ResourceAlreadyExistsException;
 import com.fusiontech.api.exceptions.ResourceNotFoundException;
 import com.fusiontech.api.models.*;
 import com.fusiontech.api.payloads.ApiResponse;
+import com.fusiontech.api.payloads.DataResponse;
 import com.fusiontech.api.payloads.MessageResponse;
+import com.fusiontech.api.payloads.Paged;
 import com.fusiontech.api.repositories.BrandRepository;
 import com.fusiontech.api.repositories.CategoryRepository;
 import com.fusiontech.api.repositories.ProductRepository;
 import com.fusiontech.api.repositories.SubcategoryRepository;
 import com.fusiontech.api.services.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -37,8 +44,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ApiResponse createProduct(ProductCreateDto createDto) {
-        Optional<Product> optionalProduct = productRepository.findByName(createDto.getName());
-        if (optionalProduct.isPresent()) {
+        if (productRepository.existsByName(createDto.getName())) {
             throw new ResourceAlreadyExistsException("Product", "name", createDto.getName());
         }
         Product newProduct = modelMapper.map(createDto, Product.class);
@@ -71,8 +77,7 @@ public class ProductServiceImpl implements ProductService {
     public ApiResponse updateProduct(Long id, ProductUpdateDto updateDto) {
         Product findProduct = productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Product", "id", id));
-        Optional<Product> sameProduct = productRepository.findByName(updateDto.getName());
-        if (sameProduct.isPresent() && !sameProduct.get().getId().equals(id)) {
+        if (productRepository.existsByName(updateDto.getName()) && !findProduct.getName().equals(updateDto.getName())) {
             throw new ResourceAlreadyExistsException("Product", "name", updateDto.getName());
         }
 
@@ -111,19 +116,55 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ApiResponse deleteProduct(Long id) {
-        return null;
+        Product findProduct = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", id));
+        productRepository.delete(findProduct);
+        return new MessageResponse("Product deleted successfully");
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getProductById(Long id) {
-        return null;
+        Product findProduct = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", id));
+        ProductDto product = modelMapper.map(findProduct, ProductDto.class);
+
+        if (findProduct.getImages() != null && !findProduct.getImages().isEmpty()) {
+            product.setImageUrl(findProduct.getImages().get(0).getUrl());
+        }
+        if (findProduct.getDiscountDate() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            product.setFormattedDiscountDate(findProduct.getDiscountDate().format(formatter));
+        }
+        return new DataResponse<>(product);
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getAllProducts(Integer pageNumber, Integer pageSize) {
-        return null;
+        pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
+        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
+
+        Page<Product> findProducts = productRepository.findAll(pageable);
+        if (findProducts.getContent().isEmpty()) {
+            return new MessageResponse("No products available");
+        }
+        List<ProductDto> products = findProducts.getContent().stream().map(
+                product -> modelMapper.map(product, ProductDto.class)).toList();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        for (int i = 0; i < products.size(); i++) {
+            if (findProducts.getContent().get(i).getDiscountDate() != null) {
+                products.get(i).setFormattedDiscountDate(findProducts.getContent().get(i)
+                        .getDiscountDate().format(formatter));
+            }
+            if (findProducts.getContent().get(i).getImages() != null && !findProducts.getContent().get(i).getImages().isEmpty()) {
+                products.get(i).setImageUrl(findProducts.getContent().get(i).getImages().get(0).getUrl());
+            }
+        }
+        Paged<ProductDto> pagedProducts = new Paged<>(products, pageNumber, findProducts.getTotalPages());
+        return new DataResponse<>(pagedProducts);
     }
 
     @Transactional(readOnly = true)
