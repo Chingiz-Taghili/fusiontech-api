@@ -10,10 +10,7 @@ import com.fusiontech.api.payloads.ApiResponse;
 import com.fusiontech.api.payloads.DataResponse;
 import com.fusiontech.api.payloads.MessageResponse;
 import com.fusiontech.api.payloads.Paged;
-import com.fusiontech.api.repositories.BrandRepository;
-import com.fusiontech.api.repositories.CategoryRepository;
-import com.fusiontech.api.repositories.ProductRepository;
-import com.fusiontech.api.repositories.SubcategoryRepository;
+import com.fusiontech.api.repositories.*;
 import com.fusiontech.api.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,7 +20,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -32,13 +31,15 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final BrandRepository brandRepository;
+    private final ReviewRepository reviewRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository, BrandRepository brandRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository, BrandRepository brandRepository, ReviewRepository reviewRepository) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
         this.subcategoryRepository = subcategoryRepository;
         this.brandRepository = brandRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Transactional
@@ -145,79 +146,246 @@ public class ProductServiceImpl implements ProductService {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
         pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
-
         Page<Product> findProducts = productRepository.findAll(pageable);
         if (findProducts.getContent().isEmpty()) {
             return new MessageResponse("No products available");
         }
-        List<ProductDto> products = findProducts.getContent().stream().map(
-                product -> modelMapper.map(product, ProductDto.class)).toList();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        for (int i = 0; i < products.size(); i++) {
-            if (findProducts.getContent().get(i).getDiscountDate() != null) {
-                products.get(i).setFormattedDiscountDate(findProducts.getContent().get(i)
-                        .getDiscountDate().format(formatter));
+        List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
             }
-            if (findProducts.getContent().get(i).getImages() != null && !findProducts.getContent().get(i).getImages().isEmpty()) {
-                products.get(i).setImageUrl(findProducts.getContent().get(i).getImages().get(0).getUrl());
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
-        }
-        Paged<ProductDto> pagedProducts = new Paged<>(products, pageNumber, findProducts.getTotalPages());
-        return new DataResponse<>(pagedProducts);
+            return dto;
+        }).toList();
+        return new DataResponse<>(new Paged<>(products, pageNumber, findProducts.getTotalPages()));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public ApiResponse getFilteredProducts(int price, int category, int brand, Integer pageNumber, Integer pageSize) {
-        return null;
+    public ApiResponse getFilteredProducts(Integer price, Long categoryId, Long brandId, Integer pageNumber, Integer pageSize) {
+        pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
+        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
+        Page<Product> findProducts;
+
+        int priceMin = 0;
+        int priceMax = Integer.MAX_VALUE;
+        switch (price) {
+            case 1:
+                priceMax = 100;
+                break;
+            case 2:
+                priceMin = 100;
+                priceMax = 1000;
+                break;
+            case 3:
+                priceMin = 1000;
+                priceMax = 2000;
+                break;
+            case 4:
+                priceMin = 2000;
+                priceMax = 3000;
+                break;
+            case 5:
+                priceMin = 3000;
+                break;
+        }
+
+        if (categoryId == 0 && brandId == 0) {
+            findProducts = productRepository.findByPriceBetween(priceMin, priceMax, pageable);
+        } else if (categoryId != 0 && brandId == 0) {
+            findProducts = productRepository.findByPriceBetweenAndCategoryId(priceMin, priceMax, categoryId, pageable);
+        } else if (categoryId == 0) {
+            findProducts = productRepository.findByPriceBetweenAndBrandId(priceMin, priceMax, brandId, pageable);
+        } else {
+            findProducts = productRepository.findByPriceBetweenAndCategoryIdAndBrandId(
+                    priceMin, priceMax, categoryId, brandId, pageable);
+        }
+
+        if (findProducts.getContent().isEmpty()) {
+            return new MessageResponse("No products found for the selected filter(s).");
+        }
+
+        List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
+            }
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
+            }
+            return dto;
+        }).toList();
+        return new DataResponse<>(new Paged<>(products, pageNumber, findProducts.getTotalPages()));
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getCatalogProducts(Long categoryId, Long subcategoryId, Integer pageNumber, Integer pageSize) {
-        return null;
+        pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
+        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
+        Page<Product> findProducts;
+        if (categoryId != 0) {
+            findProducts = productRepository.findByCategoryId(categoryId, pageable);
+        } else {
+            findProducts = productRepository.findBySubcategoryId(subcategoryId, pageable);
+        }
+
+        if (findProducts.getContent().isEmpty()) {
+            return new MessageResponse("No products found for the selected filter(s).");
+        }
+
+        List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
+            }
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
+            }
+            return dto;
+        }).toList();
+        return new DataResponse<>(new Paged<>(products, pageNumber, findProducts.getTotalPages()));
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getSearchProducts(String keyword, Integer pageNumber, Integer pageSize) {
-        return null;
+        pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
+        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
+        Page<Product> findProducts = productRepository.findByKeywordInColumnsIgnoreCase(keyword, pageable);
+        if (findProducts.getContent().isEmpty()) {
+            return new MessageResponse("No products found for the keyword: " + keyword);
+        }
+
+        List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
+            }
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
+            }
+            return dto;
+        }).toList();
+        return new DataResponse<>(new Paged<>(products, pageNumber, findProducts.getTotalPages()));
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getFeaturedProducts() {
-        return null;
+        List<Product> findProducts = productRepository.findByFeaturedTrue();
+        if (findProducts.isEmpty()) {
+            return new MessageResponse("No featured products found.");
+        }
+
+        List<ProductDto> products = findProducts.stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
+            }
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
+            }
+            return dto;
+        }).toList();
+        return new DataResponse<>(products);
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getRelatedProducts(Long categoryId, Long productId) {
-        return null;
+        List<Product> findProducts = productRepository.findByCategoryId(categoryId)
+                .stream().filter(product -> !product.getId().equals(productId)).limit(5).toList();
+        if (findProducts.isEmpty()) {
+            return new MessageResponse("No related products found for category id: " + categoryId);
+        }
+
+        List<ProductDto> products = findProducts.stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
+            }
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
+            }
+            return dto;
+        }).toList();
+        return new DataResponse<>(products);
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getOfferedProducts() {
-        return null;
+        List<Product> findProducts = productRepository.findByOfferedTrue();
+        if (findProducts.isEmpty()) {
+            return new MessageResponse("No offered products found.");
+        }
+
+        List<ProductDto> products = findProducts.stream().map(entity -> {
+            ProductDto dto = modelMapper.map(entity, ProductDto.class);
+
+            double percent = (double) Math.round(
+                    (entity.getPrice() - entity.getDiscountPrice()) / entity.getPrice() * 100 * 100) / 100;
+            dto.setDiscountPercent(percent);
+            if (entity.getDiscountDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
+            }
+            if (entity.getImages() != null && !entity.getImages().isEmpty()) {
+                dto.setImageUrl(entity.getImages().get(0).getUrl());
+            }
+            return dto;
+        }).toList();
+        return new DataResponse<>(products);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public ApiResponse getTotalProductCount() {
-        return null;
+    public ApiResponse getTotalCount() {
+        return new DataResponse<>(productRepository.count());
     }
 
     @Transactional(readOnly = true)
     @Override
     public ApiResponse getCountByPriceRanges() {
-        return null;
+        Map<Integer, Long> countByPriceMap = new HashMap<>();
+        countByPriceMap.put(1, productRepository.countByPriceLessThanEqual(100));
+        countByPriceMap.put(2, productRepository.countByPriceBetween(100, 1000));
+        countByPriceMap.put(3, productRepository.countByPriceBetween(1000, 2000));
+        countByPriceMap.put(4, productRepository.countByPriceBetween(2000, 3000));
+        countByPriceMap.put(5, productRepository.countByPriceGreaterThan(3000));
+        return new DataResponse<>(countByPriceMap);
     }
 
     @Transactional
     @Override
     public ApiResponse updateProductRating(Long productId) {
-        return null;
+        Product findProduct = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product", "id", productId));
+        List<Review> reviews = reviewRepository.findByProductId(productId);
+        Double newRating = reviews.isEmpty() ? null : reviews.stream()
+                .mapToDouble(Review::getRating).average().orElse(0.0);
+        findProduct.setRating(newRating);
+        productRepository.save(findProduct);
+        return new MessageResponse("Product rating updated successfully.");
     }
 }

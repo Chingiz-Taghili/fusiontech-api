@@ -16,7 +16,7 @@ public interface ProductService {
 
     ApiResponse getAllProducts(Integer pageNumber, Integer pageSize);
 
-    ApiResponse getFilteredProducts(int price, int category, int brand, Integer pageNumber, Integer pageSize);
+    ApiResponse getFilteredProducts(Integer price, Long categoryId, Long brandId, Integer pageNumber, Integer pageSize);
 
     ApiResponse getCatalogProducts(Long categoryId, Long subcategoryId, Integer pageNumber, Integer pageSize);
 
@@ -28,7 +28,7 @@ public interface ProductService {
 
     ApiResponse getOfferedProducts();
 
-    ApiResponse getTotalProductCount();
+    ApiResponse getTotalCount();
 
     ApiResponse getCountByPriceRanges();
 
