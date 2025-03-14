@@ -60,7 +60,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}/related")
+    @GetMapping("/{productId}/related")
     public ResponseEntity<ApiResponse> getRelatedProducts(@PathVariable Long productId, @RequestParam Long categoryId) {
         ApiResponse response = productService.getRelatedProducts(categoryId, productId);
         return ResponseEntity.ok(response);
