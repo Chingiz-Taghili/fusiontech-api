@@ -44,25 +44,25 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateDto createDto) {
         ApiResponse response = userService.createUser(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto updateDto) {
         ApiResponse response = userService.updateUser(id, updateDto);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {
         ApiResponse response = userService.deleteUser(id);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/total-count")
+    @GetMapping("/count")
     public ResponseEntity<ApiResponse> getTotalCount() {
         ApiResponse response = userService.getTotalCount();
         return ResponseEntity.ok(response);

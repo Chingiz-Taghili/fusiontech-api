@@ -37,25 +37,25 @@ public class CategoryController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ApiResponse> createCategory(@RequestBody CategoryCreateDto createDto) {
         ApiResponse response = categoryService.createCategory(createDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryUpdateDto updateDto) {
         ApiResponse response = categoryService.updateCategory(id, updateDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         ApiResponse response = categoryService.deleteCategory(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/total-count")
+    @GetMapping("/count")
     public ResponseEntity<ApiResponse> getTotalCount() {
         ApiResponse response = categoryService.getTotalCount();
         return new ResponseEntity<>(response, HttpStatus.OK);

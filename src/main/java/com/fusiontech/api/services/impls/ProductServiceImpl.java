@@ -146,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiResponse getAllProducts(Integer pageNumber, Integer pageSize) {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
         Page<Product> findProducts = productRepository.findAll(pageable);
         if (findProducts.getContent().isEmpty()) {
@@ -172,7 +172,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiResponse getFilteredProducts(Integer price, Long categoryId, Long brandId, Integer pageNumber, Integer pageSize) {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
         Page<Product> findProducts;
 
@@ -233,7 +233,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiResponse getCatalogProducts(Long categoryId, Long subcategoryId, Integer pageNumber, Integer pageSize) {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
         Page<Product> findProducts;
         if (categoryId != 0) {
@@ -265,7 +265,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiResponse getSearchProducts(String keyword, Integer pageNumber, Integer pageSize) {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
         Page<Product> findProducts = productRepository.findByKeywordInColumnsIgnoreCase(keyword, pageable);
         if (findProducts.getContent().isEmpty()) {

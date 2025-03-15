@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getAllUsers(Integer pageNumber, Integer pageSize) {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
 
         Page<UserEntity> findUsers = userRepository.findAll(pageable);
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse getSearchUsers(String keyword, Integer pageNumber, Integer pageSize) {
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id"));
 
         Page<UserEntity> findUsers = userRepository.findByKeywordInColumnsIgnoreCase(keyword, pageable);
@@ -228,7 +228,7 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException("User", "email", userEmail));
 
         pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
-        pageSize = (pageSize == null || pageSize < 1) ? 1 : pageSize;
+        pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
 
         List<Product> findProducts = findUser.getFavorites().stream().map(Favorite::getProduct).toList();
         int totalCount = findProducts.size();
