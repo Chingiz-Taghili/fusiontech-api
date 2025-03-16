@@ -49,7 +49,7 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getSearchProducts(@RequestParam String keyword,
-            @RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer pageSize) {
+                                                         @RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer pageSize) {
         ApiResponse response = productService.getSearchProducts(keyword, pageNumber, pageSize);
         return ResponseEntity.ok(response);
     }
