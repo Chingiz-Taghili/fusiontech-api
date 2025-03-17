@@ -55,6 +55,15 @@ public class CartItemServiceImpl implements CartItemService {
     @Transactional
     @Override
     public ApiResponse deleteCartItem(Long productId, String userEmail) {
-        return null;
+        if (!productRepository.existsById(productId)) {
+            throw new ResourceNotFoundException("Product", "id", productId);
+        }
+        UserEntity findUser = userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new ResourceNotFoundException("User", "email", userEmail));
+        CartItem cartItem = cartItemRepository.findByUserIdAndProductId(
+                findUser.getId(), productId).orElseThrow(() -> new ResourceNotFoundException(
+                "Cart item", "userId", findUser.getId() + ", productId: " + productId));
+        cartItemRepository.delete(cartItem);
+        return new MessageResponse("Cart item deleted successfully");
     }
 }

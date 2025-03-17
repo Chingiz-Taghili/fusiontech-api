@@ -231,6 +231,9 @@ public class UserServiceImpl implements UserService {
         pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
 
         List<Product> findProducts = findUser.getFavorites().stream().map(Favorite::getProduct).toList();
+        if (findProducts.isEmpty()) {
+            return new MessageResponse("No favorite products found for the current user");
+        }
         int totalCount = findProducts.size();
         int start = (pageNumber - 1) * pageSize;
         int end = Math.min(start + pageSize, totalCount);
