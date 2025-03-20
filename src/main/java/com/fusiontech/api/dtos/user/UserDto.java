@@ -1,5 +1,6 @@
 package com.fusiontech.api.dtos.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fusiontech.api.enums.Gender;
 import com.fusiontech.api.models.CartItem;
 import com.fusiontech.api.models.Favorite;
@@ -20,6 +21,7 @@ public class UserDto {
     private Long id;
     private String name;
     private String surname;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate birthdate;
     private String image;
     private String email;

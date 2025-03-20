@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException e) {
+        return buildErrorResponse(e, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ErrorResponse> handleIOException(IOException e) {
         return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);

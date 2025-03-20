@@ -135,10 +135,6 @@ public class ProductServiceImpl implements ProductService {
         if (findProduct.getImages() != null && !findProduct.getImages().isEmpty()) {
             product.setImageUrl(findProduct.getImages().get(0).getUrl());
         }
-        if (findProduct.getDiscountDate() != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-            product.setFormattedDiscountDate(findProduct.getDiscountDate().format(formatter));
-        }
         return new DataResponse<>(product);
     }
 
@@ -156,10 +152,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
             ProductDto dto = modelMapper.map(entity, ProductDto.class);
 
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
@@ -217,10 +209,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
             ProductDto dto = modelMapper.map(entity, ProductDto.class);
 
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
@@ -249,10 +237,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
             ProductDto dto = modelMapper.map(entity, ProductDto.class);
 
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
@@ -275,10 +259,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = findProducts.getContent().stream().map(entity -> {
             ProductDto dto = modelMapper.map(entity, ProductDto.class);
 
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
@@ -298,10 +278,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = findProducts.stream().map(entity -> {
             ProductDto dto = modelMapper.map(entity, ProductDto.class);
 
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
@@ -322,10 +298,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = findProducts.stream().map(entity -> {
             ProductDto dto = modelMapper.map(entity, ProductDto.class);
 
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }
@@ -348,10 +320,6 @@ public class ProductServiceImpl implements ProductService {
             double percent = (double) Math.round(
                     (entity.getPrice() - entity.getDiscountPrice()) / entity.getPrice() * 100 * 100) / 100;
             dto.setDiscountPercent(percent);
-            if (entity.getDiscountDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                dto.setFormattedDiscountDate(entity.getDiscountDate().format(formatter));
-            }
             if (entity.getImages() != null && !entity.getImages().isEmpty()) {
                 dto.setImageUrl(entity.getImages().get(0).getUrl());
             }

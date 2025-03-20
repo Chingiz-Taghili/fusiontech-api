@@ -7,7 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface OrderRepository extends JpaRepository<Order, Long> {
+
+    @Query("SELECT oi.order FROM OrderItem oi WHERE oi.id = :itemId")
+    Optional<Order> findOrderByOrderItemId(@Param("itemId") Long itemId);
 
     @Query("SELECT o FROM Order o WHERE LOWER(o.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(o.surname) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
