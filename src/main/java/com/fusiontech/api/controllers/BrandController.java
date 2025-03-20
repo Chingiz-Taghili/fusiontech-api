@@ -39,7 +39,7 @@ public class BrandController {
     @PostMapping
     public ResponseEntity<ApiResponse> createBrand(@RequestBody BrandCreateDto createDto) {
         ApiResponse response = brandService.createBrand(createDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")

@@ -1,4 +1,4 @@
-package com.fusiontech.api.dtos.singledtos;
+package com.fusiontech.api.dtos.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

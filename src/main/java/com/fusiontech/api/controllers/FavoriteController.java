@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("api/favorites")
+@RequestMapping("api/favorite")
 public class FavoriteController {
     private final FavoritesService favoritesService;
 

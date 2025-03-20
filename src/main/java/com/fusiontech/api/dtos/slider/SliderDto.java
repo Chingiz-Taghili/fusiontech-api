@@ -1,4 +1,4 @@
-package com.fusiontech.api.dtos.singledtos;
+package com.fusiontech.api.dtos.slider;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestimonialDto {
+public class SliderDto {
     private Long id;
-    private String name;
-    private String surname;
-    private String position;
-    private String image;
+    private String title;
     private String description;
+    private String imageUrl;
+    private String url;
+    private boolean active;
 }

@@ -1,8 +1,7 @@
 package com.fusiontech.api.services;
 
-import com.fusiontech.api.dtos.singledtos.AppealDto;
+import com.fusiontech.api.dtos.common.AppealDto;
 import com.fusiontech.api.payloads.ApiResponse;
-import com.fusiontech.api.payloads.Paged;
 
 public interface AppealService {
 

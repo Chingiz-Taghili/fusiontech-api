@@ -1,6 +1,6 @@
 package com.fusiontech.api.services.impls;
 
-import com.fusiontech.api.dtos.singledtos.AppealDto;
+import com.fusiontech.api.dtos.common.AppealDto;
 import com.fusiontech.api.exceptions.ResourceNotFoundException;
 import com.fusiontech.api.models.Appeal;
 import com.fusiontech.api.payloads.ApiResponse;

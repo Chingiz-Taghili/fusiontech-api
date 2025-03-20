@@ -1,6 +1,6 @@
 package com.fusiontech.api.controllers;
 
-import com.fusiontech.api.dtos.singledtos.AppealDto;
+import com.fusiontech.api.dtos.common.AppealDto;
 import com.fusiontech.api.payloads.ApiResponse;
 import com.fusiontech.api.services.AppealService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class AppealController {
     @PostMapping
     public ResponseEntity<ApiResponse> createAppeal(@RequestBody AppealDto appealDto) {
         ApiResponse response = appealService.createAppeal(appealDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")

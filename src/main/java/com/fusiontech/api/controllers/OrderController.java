@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("api/orders")
+@RequestMapping("api/order")
 public class OrderController {
 
     private final OrderService orderService;
@@ -61,7 +61,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<ApiResponse> createOrder(Principal principal, @RequestBody OrderCreateDto createDto) {
         ApiResponse response = orderService.createOrder(principal.getName(), createDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
@@ -85,7 +85,7 @@ public class OrderController {
     @PostMapping("/items/{orderId}")
     public ResponseEntity<ApiResponse> createOrderItem(@PathVariable Long orderId, @RequestBody OrderItemCreateDto createDto) {
         ApiResponse response = orderItemService.createOrderItem(orderId, createDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/items/{id}")

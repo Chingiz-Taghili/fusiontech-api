@@ -40,7 +40,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<ApiResponse> createCategory(@RequestBody CategoryCreateDto createDto) {
         ApiResponse response = categoryService.createCategory(createDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")

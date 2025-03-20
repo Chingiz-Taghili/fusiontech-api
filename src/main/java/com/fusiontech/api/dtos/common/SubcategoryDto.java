@@ -1,4 +1,4 @@
-package com.fusiontech.api.dtos.singledtos;
+package com.fusiontech.api.dtos.common;
 
 import com.fusiontech.api.models.Category;
 import com.fusiontech.api.models.SubcategoryName;
