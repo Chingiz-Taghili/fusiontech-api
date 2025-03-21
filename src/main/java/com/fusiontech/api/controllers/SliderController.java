@@ -6,6 +6,7 @@ import com.fusiontech.api.payloads.ApiResponse;
 import com.fusiontech.api.services.SliderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,18 +38,21 @@ public class SliderController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createSlider(@RequestBody SliderCreateDto createDto) {
         ApiResponse response = sliderService.createSlider(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateSlider(@PathVariable Long id, @RequestBody SliderUpdateDto updateDto) {
         ApiResponse response = sliderService.updateSlider(id, updateDto);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteSlider(@PathVariable Long id) {
         ApiResponse response = sliderService.deleteSlider(id);
         return ResponseEntity.ok(response);

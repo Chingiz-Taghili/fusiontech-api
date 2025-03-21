@@ -22,42 +22,45 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<ApiResponse> getAllCategories() {
         ApiResponse response = categoryService.getAllCategories();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
         ApiResponse response = categoryService.getCategoryById(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getSearchCategories(@RequestParam String keyword) {
         ApiResponse response = categoryService.getSearchCategories(keyword);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createCategory(@RequestBody CategoryCreateDto createDto) {
         ApiResponse response = categoryService.createCategory(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryUpdateDto updateDto) {
         ApiResponse response = categoryService.updateCategory(id, updateDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         ApiResponse response = categoryService.deleteCategory(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count")
     public ResponseEntity<ApiResponse> getTotalCount() {
         ApiResponse response = categoryService.getTotalCount();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 }

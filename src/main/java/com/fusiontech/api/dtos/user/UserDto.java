@@ -1,6 +1,7 @@
 package com.fusiontech.api.dtos.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fusiontech.api.enums.Gender;
 import com.fusiontech.api.models.CartItem;
 import com.fusiontech.api.models.Favorite;
@@ -27,8 +28,11 @@ public class UserDto {
     private String email;
     private String password;
     private Gender gender;
+    @JsonIgnoreProperties("user")
     private List<Favorite> favorites;
+    @JsonIgnoreProperties("user")
     private List<CartItem> cartItems;
+    @JsonIgnoreProperties("user")
     private List<Order> orders;
     private Set<Role> roles;
 }

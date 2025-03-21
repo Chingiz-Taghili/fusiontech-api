@@ -5,6 +5,7 @@ import com.fusiontech.api.payloads.ApiResponse;
 import com.fusiontech.api.services.AppealService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,22 +25,23 @@ public class AppealController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteAppeal(@PathVariable Long id) {
         ApiResponse response = appealService.deleteAppeal(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getAppealById(@PathVariable Long id) {
         ApiResponse response = appealService.getAppealById(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllAppeals(@RequestParam(required = false) Integer pageNumber,
                                                      @RequestParam(required = false) Integer pageSize) {
         ApiResponse response = appealService.getAllAppeals(pageNumber, pageSize);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
@@ -47,12 +49,12 @@ public class AppealController {
                                                         @RequestParam(required = false) Integer pageNumber,
                                                         @RequestParam(required = false) Integer pageSize) {
         ApiResponse response = appealService.getSearchAppeals(keyword, pageNumber, pageSize);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count")
     public ResponseEntity<ApiResponse> getTotalCount() {
         ApiResponse response = appealService.getTotalCount();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 }

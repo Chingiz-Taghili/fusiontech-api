@@ -1,11 +1,9 @@
 package com.fusiontech.api.controllers;
 
+import com.fusiontech.api.dtos.cart.CartItemCreateDto;
 import com.fusiontech.api.dtos.review.ReviewCreateDto;
 import com.fusiontech.api.payloads.ApiResponse;
-import com.fusiontech.api.services.RegionService;
-import com.fusiontech.api.services.ReviewService;
-import com.fusiontech.api.services.SubcategoryService;
-import com.fusiontech.api.services.TestimonialService;
+import com.fusiontech.api.services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +14,44 @@ import java.security.Principal;
 @RequestMapping("api")
 public class CommonController {
 
+    private final CartItemService cartItemService;
+    private final FavoritesService favoritesService;
     private final RegionService regionService;
     private final ReviewService reviewService;
     private final SubcategoryService subcategoryService;
     private final TestimonialService testimonialService;
 
-    public CommonController(RegionService regionService, ReviewService reviewService, SubcategoryService subcategoryService, TestimonialService testimonialService) {
+    public CommonController(CartItemService cartItemService, FavoritesService favoritesService, RegionService regionService, ReviewService reviewService, SubcategoryService subcategoryService, TestimonialService testimonialService) {
+        this.cartItemService = cartItemService;
+        this.favoritesService = favoritesService;
         this.regionService = regionService;
         this.reviewService = reviewService;
         this.subcategoryService = subcategoryService;
         this.testimonialService = testimonialService;
+    }
+
+    @PostMapping("/cart")
+    public ResponseEntity<ApiResponse> addToCart(@RequestBody CartItemCreateDto createDto, Principal principal) {
+        ApiResponse response = cartItemService.addToCart(createDto, principal.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/cart/{id}")
+    public ResponseEntity<ApiResponse> deleteCartItem(@PathVariable Long id, Principal principal) {
+        ApiResponse response = cartItemService.deleteCartItem(id, principal.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/favorite/{productId}")
+    public ResponseEntity<ApiResponse> addToFavorites(@PathVariable Long productId, Principal principal) {
+        ApiResponse response = favoritesService.addToFavorites(productId, principal.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/favorite/{id}")
+    public ResponseEntity<ApiResponse> deleteFavorite(@PathVariable Long id, Principal principal) {
+        ApiResponse response = favoritesService.deleteFavorite(id, principal.getName());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/regions")

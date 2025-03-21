@@ -1,5 +1,6 @@
 package com.fusiontech.api.dtos.orderItem;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fusiontech.api.models.Order;
 import com.fusiontech.api.models.Product;
 import lombok.AllArgsConstructor;
@@ -14,5 +15,6 @@ public class OrderItemDto {
     private Product product;
     private double price;
     private int quantity;
+    @JsonIgnoreProperties("orderItems")
     private Order order;
 }

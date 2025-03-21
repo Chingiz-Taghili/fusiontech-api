@@ -1,6 +1,7 @@
 package com.fusiontech.api.dtos.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fusiontech.api.enums.OrderStatus;
 import com.fusiontech.api.enums.PaymentMethod;
 import com.fusiontech.api.enums.PaymentStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 public class OrderDto {
     private Long id;
 
+    @JsonIgnoreProperties("orders")
     private UserEntity user;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime orderDate;
@@ -42,5 +44,6 @@ public class OrderDto {
     private PaymentMethod paymentMethod;
     private OrderStatus orderStatus;
     private PaymentStatus paymentStatus;
+    @JsonIgnoreProperties("order")
     private List<OrderItem> orderItems;
 }

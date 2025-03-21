@@ -6,6 +6,7 @@ import com.fusiontech.api.payloads.ApiResponse;
 import com.fusiontech.api.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -85,12 +86,14 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createProduct(@RequestBody ProductCreateDto createDto) {
         ApiResponse response = productService.createProduct(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDto updateDto) {
         ApiResponse response = productService.updateProduct(id, updateDto);
         return ResponseEntity.ok(response);
@@ -103,6 +106,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id) {
         ApiResponse response = productService.deleteProduct(id);
         return ResponseEntity.ok(response);
