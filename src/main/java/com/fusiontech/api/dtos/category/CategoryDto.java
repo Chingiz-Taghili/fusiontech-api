@@ -15,7 +15,7 @@ import java.util.List;
 public class CategoryDto {
     private Long id;
     private String name;
-    private String image;
+    private String imageUrl;
     private Integer productQuantity;
     //Yalnız bu dto-da subcategory-nin "category"-sini gizlədir. SubcategoryDto-a görünməyə davam edir
     @JsonIgnoreProperties("category")

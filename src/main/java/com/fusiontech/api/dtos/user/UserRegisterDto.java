@@ -14,7 +14,7 @@ public class UserRegisterDto {
     private String name;
     private String surname;
     private LocalDate birthdate;
-    private String image;
+    private String imageUrl;
     private Gender gender;
     private String email;
     private String password;

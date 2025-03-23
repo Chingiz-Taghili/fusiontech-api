@@ -12,6 +12,6 @@ public class TestimonialDto {
     private String name;
     private String surname;
     private String position;
-    private String image;
+    private String imageUrl;
     private String description;
 }

@@ -1,6 +1,6 @@
-package com.fusiontech.api.config;
+package com.fusiontech.api.enums;
 
-public class Constants {
+public class Roles {
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 }

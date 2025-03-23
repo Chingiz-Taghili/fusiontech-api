@@ -1,9 +1,11 @@
 package com.fusiontech.api.config;
 
+import com.fusiontech.api.enums.Roles;
 import com.fusiontech.api.models.Role;
 import com.fusiontech.api.repositories.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,10 +19,9 @@ public class RoleInitializer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-
-        List<String> roles = List.of(Constants.ROLE_ADMIN, Constants.ROLE_USER);
-
+    @Transactional
+    public void run(String... args) {
+        List<String> roles = List.of(Roles.ROLE_ADMIN, Roles.ROLE_USER);
         roles.forEach(this::createRole);
     }
 

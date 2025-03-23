@@ -41,11 +41,11 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
 
     //İstifadəçinin sahib olduğu rolların siyahısını qaytarır.
     @Override

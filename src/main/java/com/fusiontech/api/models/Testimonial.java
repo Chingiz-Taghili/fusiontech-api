@@ -13,7 +13,7 @@ public class Testimonial {
     private String name;
     private String surname;
     private String position;
-    private String image;
+    private String imageUrl;
     @Column(length = 400)
     private String description;
 }

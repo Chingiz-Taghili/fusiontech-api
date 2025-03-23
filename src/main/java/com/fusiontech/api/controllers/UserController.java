@@ -1,7 +1,6 @@
 package com.fusiontech.api.controllers;
 
 import com.fusiontech.api.dtos.user.UserCreateDto;
-import com.fusiontech.api.dtos.user.UserRegisterDto;
 import com.fusiontech.api.dtos.user.UserUpdateDto;
 import com.fusiontech.api.payloads.ApiResponse;
 import com.fusiontech.api.services.UserService;

@@ -24,7 +24,7 @@ public class UserDto {
     private String surname;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate birthdate;
-    private String image;
+    private String imageUrl;
     private String email;
     private String password;
     private Gender gender;

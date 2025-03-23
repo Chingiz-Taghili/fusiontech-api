@@ -26,9 +26,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -120,7 +121,12 @@ public class UserServiceImpl implements UserService {
                 newRole.setName("ROLE_USER");
                 return roleRepository.save(newRole);
             });
-            newUser.setRoles(Collections.singletonList(role));
+            newUser.setRoles(Set.of(role));
+        } else {
+            Set<Role> roles = createDto.getRoles().stream().map(role -> roleRepository.findByName(
+                    role.getName().toUpperCase()).orElseThrow(() -> new ResourceNotFoundException(
+                    "Role", "name", role.getName()))).collect(Collectors.toSet());
+            newUser.setRoles(roles);
         }
 
         userRepository.save(newUser);
@@ -137,7 +143,7 @@ public class UserServiceImpl implements UserService {
         String password = encoder.encode(registerDto.getPassword());
         newUser.setPassword(password);
 
-        if (registerDto.getImage() == null || registerDto.getImage().isEmpty()) {
+        if (registerDto.getImageUrl() == null || registerDto.getImageUrl().isEmpty()) {
             newUser.setImageUrl("/default-profile-picture.svg");
         }
 
@@ -147,7 +153,7 @@ public class UserServiceImpl implements UserService {
             newRole.setName("ROLE_USER");
             return roleRepository.save(newRole);
         });
-        newUser.setRoles(Collections.singletonList(role));
+        newUser.setRoles(Set.of(role));
 
 //        String confirmToken = String.valueOf(UUID.randomUUID());
 //        user.setConfirmationToken(token);
