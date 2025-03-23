@@ -7,6 +7,7 @@ import com.fusiontech.api.dtos.user.UserCreateDto;
 import com.fusiontech.api.dtos.user.UserDto;
 import com.fusiontech.api.dtos.user.UserRegisterDto;
 import com.fusiontech.api.dtos.user.UserUpdateDto;
+import com.fusiontech.api.enums.Roles;
 import com.fusiontech.api.exceptions.ResourceAlreadyExistsException;
 import com.fusiontech.api.exceptions.ResourceNotFoundException;
 import com.fusiontech.api.models.*;
@@ -181,6 +182,20 @@ public class UserServiceImpl implements UserService {
         } else {
             findUser.setImageUrl("/default-profile-picture.svg");
         }
+        if (updateDto.getRoles() == null || updateDto.getRoles().isEmpty()) {
+            Role role = roleRepository.findByName("ROLE_USER").orElseGet(() ->
+            {
+                Role newRole = new Role();
+                newRole.setName("ROLE_USER");
+                return roleRepository.save(newRole);
+            });
+            findUser.setRoles(Set.of(role));
+        } else {
+            Set<Role> roles = updateDto.getRoles().stream().map(role -> roleRepository.findByName(
+                    role.getName().toUpperCase()).orElseThrow(() -> new ResourceNotFoundException(
+                    "Role", "name", role.getName()))).collect(Collectors.toSet());
+            findUser.setRoles(roles);
+        }
         if (updateDto.getPassword() != null && !updateDto.getPassword().isEmpty()) {
             String password = encoder.encode(updateDto.getPassword());
             findUser.setPassword(password);
@@ -194,6 +209,13 @@ public class UserServiceImpl implements UserService {
     public ApiResponse deleteUser(Long id) {
         UserEntity findUser = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id));
+
+        boolean isSuperAdmin = findUser.getRoles().stream()
+                .anyMatch(role -> role.getName().equals(Roles.ROLE_SUPER_ADMIN));
+        if (isSuperAdmin) {
+            throw new RuntimeException("Super Admin cannot be deleted!");
+        }
+
         userRepository.delete(findUser);
         return new MessageResponse("User deleted successfully");
     }

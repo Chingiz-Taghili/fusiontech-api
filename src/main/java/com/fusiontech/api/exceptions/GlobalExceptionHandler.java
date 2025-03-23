@@ -48,6 +48,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
