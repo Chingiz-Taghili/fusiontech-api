@@ -35,20 +35,18 @@ categories and user authentication.
    git clone https://github.com/Chingiz-Taghili/fusiontech-api.git
    ```
 2. Configure your PostgreSQL settings in application.yml or application.properties:
-   ```
-   spring:
-   datasource:
-   url: jdbc:postgresql://localhost:5432/fusiontech
-   username: your_db_username
-   password: your_db_password
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/fusiontech
+   spring.datasource.username=your_db_username
+   spring.datasource.password=your_db_password
    ```
 3. Run the project via terminal:
-   ```
+   ```bash
    ./mvnw spring-boot:run
    ```
 
 ## Auth Testing
-Default endpoints:
+Default endpoints:  
 POST /api/auth/register – Register a new user  
 POST /api/auth/login – Login (retrieve JWT token)  
 After receiving the token, you can use it to access other protected endpoints (include the token in the Authorization header as Bearer <token>).
