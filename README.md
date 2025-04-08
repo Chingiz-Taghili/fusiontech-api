@@ -53,8 +53,8 @@ You can test the API through Swagger UI: http://localhost:8080/swagger-ui/index.
 
 ## Author
 Chingiz Taghili
-📧 chingiz.taghili@gmail.com
-🔗 GitHub: @Chingiz-Taghili
+chingiz.taghili@gmail.com
+GitHub: @Chingiz-Taghili
 
 ## Note
 This project is developed for portfolio purposes and demonstrates essential backend principles that can be applied in a real-world work environment.
