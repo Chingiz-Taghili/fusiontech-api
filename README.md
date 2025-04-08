@@ -52,7 +52,7 @@ After receiving the token, you can use it to access other protected endpoints (i
 You can test the API through Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ## Author
-Chingiz Taghili  
+Chingiz Taghili/
 chingiz.taghili@gmail.com  
 GitHub: @Chingiz-Taghili
 
