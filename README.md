@@ -46,14 +46,14 @@ categories and user authentication.
    ```
 
 ## API Documentation
-You can test the API through Swagger UI: http://localhost:8080/swagger-ui/index.html
+You can test the API through Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 Default authentication endpoints:  
 POST /api/auth/register – Register a new user  
 POST /api/auth/login – Login (retrieve JWT token)  
 After receiving the token, you can use it to access other protected endpoints (include the token in the Authorization header as Bearer <token>).
 
-Note: This project is developed for portfolio purposes and demonstrates essential backend principles that can be applied in a real-world work environment.
+**Note:** This project is developed for portfolio purposes and demonstrates essential backend principles that can be applied in a real-world work environment.
 
 ## Author
 Chingiz Taghili  
